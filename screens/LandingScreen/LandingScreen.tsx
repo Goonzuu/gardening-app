@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Icons } from '../../constants/icons';
 
 const LandingScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -10,7 +11,7 @@ const LandingScreen = () => {
     return (
         <View style={styles.container}>
             <Image
-                source={require('../../assets/icons/plant-icon.png')}
+                source={Icons.plant}
                 style={styles.icon}
                 resizeMode="contain"
             />
