@@ -10,6 +10,13 @@ export default StyleSheet.create({
     flexGrow: 1,
     padding: 24,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
+    width: 100,
+    height: 100,
+    marginBottom: 14,
+    marginTop: 6,
   },
   title: {
     fontSize: 24,
@@ -21,6 +28,7 @@ export default StyleSheet.create({
   input: {
     backgroundColor: '#F7FAFC',
     borderColor: '#CBD5E0',
+    width: '100%',
     borderWidth: 1,
     borderRadius: 12,
     paddingHorizontal: 16,
@@ -31,6 +39,7 @@ export default StyleSheet.create({
   },
   button: {
     backgroundColor: Colors.primary,
+    width: '100%',
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
