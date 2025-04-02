@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     Text,
     TextInput,
@@ -7,10 +7,12 @@ import {
     Platform,
     ScrollView,
     Image,
+    Animated,
 } from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Icons } from '../../constants/icons';
 
 const RegisterScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -19,6 +21,17 @@ const RegisterScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+useEffect(() => {
+  Animated.timing(fadeAnim, {
+    toValue: 1,
+    duration: 500,
+    useNativeDriver: true,
+  }).start();
+}, []);
+
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -26,7 +39,7 @@ const RegisterScreen = () => {
         >
             <ScrollView contentContainerStyle={styles.scroll}>
                 <Image
-                    source={require('../../assets/icons/gardenMen-icon.png')}
+                    source={Icons.flowerman}
                     style={styles.icon}
                     resizeMode="contain"
                 />
