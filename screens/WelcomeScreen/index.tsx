@@ -1,26 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import styles from './styles';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 import { showToast } from '../../utils/showToast';
+import { Icons } from '../../constants/icons';
 
 const WelcomeScreen = () => {
   const navigation = useNavigation();
-
   const { recentlyRegistered, setRecentlyRegistered } = useAuth();
 
-  useEffect(() => {
-    if (recentlyRegistered) {
-      showToast('Cuenta creada con éxito ✅');
-      setRecentlyRegistered(false);
-    }
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      if (recentlyRegistered) {
+        showToast('Cuenta creada con éxito ✅');
+        setRecentlyRegistered(false);
+      }
+    }, [recentlyRegistered])
+  );
 
   return (
     <View style={styles.container}>
       <Image
-        source={require('../../assets/icons/gardening-icon.png')}
+        source={Icons.flowerman}
         style={styles.logo}
         resizeMode="contain"
       />
