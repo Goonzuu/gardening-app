@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
     Text,
     TextInput,
@@ -7,12 +7,15 @@ import {
     Platform,
     ScrollView,
     Image,
-    Animated,
 } from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Icons } from '../../constants/icons';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from '../../services/firebaseConfig';
+import { Alert } from 'react-native';
+
 
 const RegisterScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -21,15 +24,33 @@ const RegisterScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const handleRegister = async () => {
+        if (!fullName || !email || !password) {
+            Alert.alert('Error', 'Por favor completá todos los campos');
+            return;
+        }
 
-useEffect(() => {
-  Animated.timing(fadeAnim, {
-    toValue: 1,
-    duration: 500,
-    useNativeDriver: true,
-  }).start();
-}, []);
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(userCredential.user, {
+                displayName: fullName,
+            });
+
+            Alert.alert('Registro exitoso', '¡Bienvenido a GreenTime!');
+        } catch (error: any) {
+            let errorMessage = 'Ocurrió un error al crear la cuenta';
+
+            if (error.code === 'auth/email-already-in-use') {
+                errorMessage = 'Este correo ya está en uso';
+            } else if (error.code === 'auth/invalid-email') {
+                errorMessage = 'Correo inválido';
+            } else if (error.code === 'auth/weak-password') {
+                errorMessage = 'La contraseña debe tener al menos 6 caracteres';
+            }
+
+            Alert.alert('Error', errorMessage);
+        }
+    };
 
 
     return (
@@ -69,11 +90,9 @@ useEffect(() => {
                     value={password}
                     onChangeText={setPassword}
                 />
-
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={handleRegister}>
                     <Text style={styles.buttonText}>Crear cuenta</Text>
                 </TouchableOpacity>
-
                 <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.secondaryAction}>
                     <Text style={styles.secondaryText}>
                         ¿Ya tenés cuenta? <Text style={styles.link}>Iniciar sesión</Text>

@@ -13,6 +13,8 @@ import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Icons } from '../../constants/icons';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../services/firebaseConfig';
 
 const LoginScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -20,9 +22,29 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    Alert.alert('');
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Por favor completá todos los campos');
+      return;
+    }
+  
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error: any) {
+      let errorMessage = 'Ocurrió un error al iniciar sesión';
+  
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = 'El usuario no existe';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Contraseña incorrecta';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Correo inválido';
+      }
+  
+      Alert.alert('Error', errorMessage);
+    }
   };
+  
 
   return (
     <KeyboardAvoidingView
