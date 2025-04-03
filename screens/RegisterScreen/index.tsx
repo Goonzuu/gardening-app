@@ -16,8 +16,9 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../../services/firebaseConfig';
 import { Alert } from 'react-native';
 import { registerValidationSchema } from '../../utils/validationSchemas';
-import AppLoader from '../../componentes/common/AppLoader';
+import AppLoader from '../../components/common/AppLoader';
 import { useAuth } from '../../context/AuthContext';
+import { showToast } from '../../utils/showToast';
 
 
 const RegisterScreen = () => {
@@ -42,8 +43,6 @@ const RegisterScreen = () => {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await updateProfile(userCredential.user, { displayName: fullName });
             setRecentlyRegistered(true);
-
-            Alert.alert('Registro exitoso', '¡Bienvenido a GreenTime!');
         } catch (error: any) {
             let errorMessage = 'Ocurrió un error al crear la cuenta';
 
@@ -55,7 +54,7 @@ const RegisterScreen = () => {
                 errorMessage = 'La contraseña debe tener al menos 6 caracteres';
             }
 
-            Alert.alert('Error', errorMessage);
+            showToast(errorMessage, 'error');
         } finally {
             setLoading(false);
         }

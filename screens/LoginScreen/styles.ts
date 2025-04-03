@@ -24,6 +24,12 @@ export default StyleSheet.create({
     textAlign: 'center',
     marginBottom: 32,
   },
+  error: {
+    color: '#E53E3E',
+    fontSize: 13,
+    marginBottom: 8,
+    alignSelf: 'flex-start',
+  },  
   input: {
     backgroundColor: '#F7FAFC',
     borderColor: '#CBD5E0',

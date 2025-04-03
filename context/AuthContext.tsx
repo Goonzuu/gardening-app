@@ -8,7 +8,11 @@ interface AuthContextType {
     setRecentlyRegistered: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, recentlyRegistered: false, setRecentlyRegistered: () => { } });
+const objType = {
+    user: null, recentlyRegistered: false, setRecentlyRegistered: () => { },
+}
+
+const AuthContext = createContext<AuthContextType>(objType);
 
 export const useAuth = () => useContext(AuthContext);
 
