@@ -18,6 +18,12 @@ export default StyleSheet.create({
     marginBottom: 14,
     marginTop: 6,
   },
+  error: {
+    color: '#E53E3E',
+    fontSize: 13,
+    marginBottom: 8,
+    alignSelf: 'flex-start',
+  },  
   title: {
     fontSize: 24,
     fontWeight: 'bold',

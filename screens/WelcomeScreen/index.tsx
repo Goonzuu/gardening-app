@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../../context/AuthContext';
+import { showToast } from '../../utils/showToast';
 
 const WelcomeScreen = () => {
   const navigation = useNavigation();
+
+  const { recentlyRegistered, setRecentlyRegistered } = useAuth();
+
+  useEffect(() => {
+    if (recentlyRegistered) {
+      showToast('Cuenta creada con éxito ✅');
+      setRecentlyRegistered(false);
+    }
+  }, []);
+
   return (
     <View style={styles.container}>
       <Image
