@@ -15,26 +15,33 @@ import { Icons } from '../../constants/icons';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../../services/firebaseConfig';
 import { Alert } from 'react-native';
+import { registerValidationSchema } from '../../utils/validationSchemas';
+import AppLoader from '../../componentes/common/AppLoader';
+import { useAuth } from '../../context/AuthContext';
 
 
 const RegisterScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
+      const { setRecentlyRegistered } = useAuth();
 
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleRegister = async () => {
+
         if (!fullName || !email || !password) {
             Alert.alert('Error', 'Por favor completá todos los campos');
             return;
         }
-
+        setLoading(true);
         try {
+            await registerValidationSchema.validate({ fullName, email, password });
+
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await updateProfile(userCredential.user, {
-                displayName: fullName,
-            });
+            await updateProfile(userCredential.user, { displayName: fullName });
+            setRecentlyRegistered(true);
 
             Alert.alert('Registro exitoso', '¡Bienvenido a GreenTime!');
         } catch (error: any) {
@@ -49,9 +56,10 @@ const RegisterScreen = () => {
             }
 
             Alert.alert('Error', errorMessage);
+        } finally {
+            setLoading(false);
         }
     };
-
 
     return (
         <KeyboardAvoidingView
@@ -90,14 +98,15 @@ const RegisterScreen = () => {
                     value={password}
                     onChangeText={setPassword}
                 />
-                <TouchableOpacity style={styles.button} onPress={handleRegister}>
-                    <Text style={styles.buttonText}>Crear cuenta</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={handleRegister}>
+                        <Text style={styles.buttonText}>Crear cuenta</Text>
+                    </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.secondaryAction}>
                     <Text style={styles.secondaryText}>
                         ¿Ya tenés cuenta? <Text style={styles.link}>Iniciar sesión</Text>
                     </Text>
                 </TouchableOpacity>
+                <AppLoader visible={loading} />
             </ScrollView>
         </KeyboardAvoidingView>
     );
