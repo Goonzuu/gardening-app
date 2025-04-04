@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
     Text,
-    TextInput,
     TouchableOpacity,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
     Image,
+    View,
 } from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
@@ -19,19 +19,16 @@ import { registerValidationSchema } from '../../utils/validationSchemas';
 import AppLoader from '../../components/common/AppLoader';
 import { useAuth } from '../../context/AuthContext';
 import { showToast } from '../../utils/showToast';
-
+import CustomInput from '../../components/form/CustomInput';
+import { Formik } from 'formik';
 
 const RegisterScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
-      const { setRecentlyRegistered } = useAuth();
-
-    const [fullName, setFullName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { setRecentlyRegistered } = useAuth();
     const [loading, setLoading] = useState(false);
 
-    const handleRegister = async () => {
-
+    const handleRegister = async (values: { fullName: string; email: string; password: string }) => {
+        const { fullName, email, password } = values;
         if (!fullName || !email || !password) {
             Alert.alert('Error', 'Por favor completá todos los campos');
             return;
@@ -60,55 +57,63 @@ const RegisterScreen = () => {
         }
     };
 
-    return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={styles.container}
-        >
-            <ScrollView contentContainerStyle={styles.scroll}>
+        return (
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+              style={styles.container}
+            >
+              <ScrollView contentContainerStyle={styles.scroll}>
                 <Image
-                    source={Icons.flowerman}
-                    style={styles.icon}
-                    resizeMode="contain"
+                  source={Icons.flowerman}
+                  style={styles.icon}
+                  resizeMode="contain"
                 />
                 <Text style={styles.title}>¡Registrate en GreenTime!</Text>
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Nombre completo"
-                    placeholderTextColor="#A0AEC0"
-                    value={fullName}
-                    onChangeText={setFullName}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Correo electrónico"
-                    placeholderTextColor="#A0AEC0"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    value={email}
-                    onChangeText={setEmail}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Contraseña"
-                    placeholderTextColor="#A0AEC0"
-                    secureTextEntry
-                    value={password}
-                    onChangeText={setPassword}
-                />
-                    <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          
+                <Formik
+                  initialValues={{ fullName: '', email: '', password: '' }}
+                  validationSchema={registerValidationSchema}
+                  onSubmit={handleRegister}
+                >
+                  {({ handleSubmit }) => (
+                     <View style={{ width: '100%' }}>
+                      <CustomInput
+                        name="fullName"
+                        placeholder="Nombre completo"
+                      />
+                      <CustomInput
+                        name="email"
+                        placeholder="Correo electrónico"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                      />
+                      <CustomInput
+                        name="password"
+                        placeholder="Contraseña"
+                        secureTextEntry
+                      />
+          
+                      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                         <Text style={styles.buttonText}>Crear cuenta</Text>
-                    </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.secondaryAction}>
-                    <Text style={styles.secondaryText}>
-                        ¿Ya tenés cuenta? <Text style={styles.link}>Iniciar sesión</Text>
-                    </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </Formik>
+          
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Login')}
+                  style={styles.secondaryAction}
+                >
+                  <Text style={styles.secondaryText}>
+                    ¿Ya tenés cuenta? <Text style={styles.link}>Iniciar sesión</Text>
+                  </Text>
                 </TouchableOpacity>
+          
                 <AppLoader visible={loading} />
-            </ScrollView>
-        </KeyboardAvoidingView>
-    );
+              </ScrollView>
+            </KeyboardAvoidingView>
+          );
+          
 };
 
 export default RegisterScreen;
