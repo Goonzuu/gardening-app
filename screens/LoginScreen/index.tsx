@@ -19,6 +19,7 @@ import { Icons } from '../../constants/icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AppLoader from '../../components/common/AppLoader';
+import CustomInput from '../../components/form/CustomInput';
 
 const LoginScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -57,35 +58,10 @@ const LoginScreen = () => {
           validationSchema={loginValidationSchema}
           onSubmit={handleLogin}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          {({ handleSubmit }) => (
             <View style={{ width: '100%' }}>
-              <TextInput
-                style={styles.input}
-                placeholder="Correo electrónico"
-                placeholderTextColor="#A0AEC0"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-                value={values.email}
-              />
-              {touched.email && errors.email && (
-                <Text style={styles.error}>{errors.email}</Text>
-              )}
-
-              <TextInput
-                style={styles.input}
-                placeholder="Contraseña"
-                placeholderTextColor="#A0AEC0"
-                secureTextEntry
-                onChangeText={handleChange('password')}
-                onBlur={handleBlur('password')}
-                value={values.password}
-              />
-              {touched.password && errors.password && (
-                <Text style={styles.error}>{errors.password}</Text>
-              )}
-
+              <CustomInput name="email" placeholder="Correo electronico" keyboardType="email-address" />
+              <CustomInput name="password" placeholder="Contraseña" secureTextEntry />
               <TouchableOpacity style={styles.button} onPress={() => handleSubmit()}>
                 <Text style={styles.buttonText}>Iniciar sesión</Text>
               </TouchableOpacity>
