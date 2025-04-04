@@ -81,17 +81,21 @@ const RegisterScreen = () => {
                             <CustomInput
                                 name="fullName"
                                 placeholder="Nombre completo"
+                                icon="user"
                             />
                             <CustomInput
                                 name="email"
                                 placeholder="Correo electrónico"
                                 keyboardType="email-address"
                                 autoCapitalize="none"
+                                icon="mail"
                             />
                             <CustomInput
                                 name="password"
                                 placeholder="Contraseña"
-                                secureTextEntry
+                                secure
+                                icon="lock"
+                                rightIconToggle="eye"
                             />
 
                             <CustomButton
