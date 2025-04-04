@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
@@ -20,6 +19,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AppLoader from '../../components/common/AppLoader';
 import CustomInput from '../../components/form/CustomInput';
+import CustomButton from '../../components/common/CustomButton';
 
 const LoginScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -62,9 +62,10 @@ const LoginScreen = () => {
             <View style={{ width: '100%' }}>
               <CustomInput name="email" placeholder="Correo electronico" keyboardType="email-address" />
               <CustomInput name="password" placeholder="Contraseña" secureTextEntry />
-              <TouchableOpacity style={styles.button} onPress={() => handleSubmit()}>
-                <Text style={styles.buttonText}>Iniciar sesión</Text>
-              </TouchableOpacity>
+              <CustomButton
+                title="Iniciar Sesión"
+                onPress={handleSubmit}
+              />
             </View>
           )}
         </Formik>

@@ -21,6 +21,7 @@ import { useAuth } from '../../context/AuthContext';
 import { showToast } from '../../utils/showToast';
 import CustomInput from '../../components/form/CustomInput';
 import { Formik } from 'formik';
+import CustomButton from '../../components/common/CustomButton';
 
 const RegisterScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -57,63 +58,64 @@ const RegisterScreen = () => {
         }
     };
 
-        return (
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-              style={styles.container}
-            >
-              <ScrollView contentContainerStyle={styles.scroll}>
+    return (
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={styles.container}
+        >
+            <ScrollView contentContainerStyle={styles.scroll}>
                 <Image
-                  source={Icons.flowerman}
-                  style={styles.icon}
-                  resizeMode="contain"
+                    source={Icons.flowerman}
+                    style={styles.icon}
+                    resizeMode="contain"
                 />
                 <Text style={styles.title}>¡Registrate en GreenTime!</Text>
-          
+
                 <Formik
-                  initialValues={{ fullName: '', email: '', password: '' }}
-                  validationSchema={registerValidationSchema}
-                  onSubmit={handleRegister}
+                    initialValues={{ fullName: '', email: '', password: '' }}
+                    validationSchema={registerValidationSchema}
+                    onSubmit={handleRegister}
                 >
-                  {({ handleSubmit }) => (
-                     <View style={{ width: '100%' }}>
-                      <CustomInput
-                        name="fullName"
-                        placeholder="Nombre completo"
-                      />
-                      <CustomInput
-                        name="email"
-                        placeholder="Correo electrónico"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                      />
-                      <CustomInput
-                        name="password"
-                        placeholder="Contraseña"
-                        secureTextEntry
-                      />
-          
-                      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                        <Text style={styles.buttonText}>Crear cuenta</Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
+                    {({ handleSubmit }) => (
+                        <View style={{ width: '100%' }}>
+                            <CustomInput
+                                name="fullName"
+                                placeholder="Nombre completo"
+                            />
+                            <CustomInput
+                                name="email"
+                                placeholder="Correo electrónico"
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                            />
+                            <CustomInput
+                                name="password"
+                                placeholder="Contraseña"
+                                secureTextEntry
+                            />
+
+                            <CustomButton
+                                title="Crear cuenta"
+                                onPress={handleSubmit}
+                            />
+                        </View>
+                    )}
                 </Formik>
-          
+
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('Login')}
-                  style={styles.secondaryAction}
+                    onPress={() => navigation.navigate('Login')}
+                    style={styles.secondaryAction}
                 >
-                  <Text style={styles.secondaryText}>
-                    ¿Ya tenés cuenta? <Text style={styles.link}>Iniciar sesión</Text>
-                  </Text>
+                    <Text style={styles.secondaryText}>
+                        ¿Ya tenés cuenta? <Text style={styles.link}>Iniciar sesión</Text>
+                    </Text>
                 </TouchableOpacity>
-          
+
                 <AppLoader visible={loading} />
-              </ScrollView>
-            </KeyboardAvoidingView>
-          );
-          
+            </ScrollView>
+        </KeyboardAvoidingView>
+    );
+
 };
 
 export default RegisterScreen;
