@@ -5,6 +5,7 @@ const Colors = {
     secondary: '#C6F6D5',
     text: '#1A202C',
     mutedText: '#4A5568',
+    error: '#E53E3E', 
   };
   
   export default Colors;
