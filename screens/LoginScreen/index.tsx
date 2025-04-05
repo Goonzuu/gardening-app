@@ -60,7 +60,8 @@ const LoginScreen = () => {
         >
           {({ handleSubmit }) => (
             <View style={{ width: '100%' }}>
-              <CustomInput name="email" placeholder="Correo electronico" keyboardType="email-address" icon="mail" />
+              <CustomInput name="email" placeholder="Correo electronico" icon="mail" keyboardType="email-address"
+                autoCapitalize="none" />
               <CustomInput name="password" placeholder="Contraseña" secure
                 icon="lock"
                 rightIconToggle="eye" />

@@ -1,12 +1,15 @@
 import Toast from 'react-native-toast-message';
 
-type ToastType = 'success' | 'error' | 'info';
-
-export const showToast = (message: string, type: ToastType = 'success') => {
+export const showToast = (
+  message: string,
+  type: 'success' | 'error' | 'info' = 'success'
+) => {
   Toast.show({
     type,
     text1: message,
     position: 'top',
     visibilityTime: 2500,
+    autoHide: true,
+    topOffset: 60,
   });
 };
