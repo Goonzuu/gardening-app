@@ -17,4 +17,5 @@ export const registerValidationSchema = Yup.object().shape({
   password: Yup.string()
     .min(6, 'Mínimo 6 caracteres')
     .required('La contraseña es obligatoria'),
+  role: Yup.string().required('Seleccione un rol'),
 });

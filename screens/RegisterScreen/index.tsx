@@ -13,8 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Icons } from '../../constants/icons';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from '../../services/firebaseConfig';
-import { Alert } from 'react-native';
+import { auth, db } from '../../services/firebaseConfig';
 import { registerValidationSchema } from '../../utils/validationSchemas';
 import AppLoader from '../../components/common/AppLoader';
 import { useAuth } from '../../context/AuthContext';
@@ -22,24 +21,39 @@ import { showToast } from '../../utils/showToast';
 import CustomInput from '../../components/form/CustomInput';
 import { Formik } from 'formik';
 import CustomButton from '../../components/common/CustomButton';
+import { doc, setDoc } from 'firebase/firestore';
+import CustomSelect from '../../components/form/CustomSelect';
 
 const RegisterScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
     const { setRecentlyRegistered } = useAuth();
     const [loading, setLoading] = useState(false);
 
-    const handleRegister = async (values: { fullName: string; email: string; password: string }) => {
-        const { fullName, email, password } = values;
-        if (!fullName || !email || !password) {
-            Alert.alert('Error', 'Por favor completá todos los campos');
-            return;
-        }
+    const handleRegister = async (values: {
+        fullName: string;
+        email: string;
+        password: string;
+        role: string;
+    }) => {
+        const { fullName, email, password, role } = values;
+
         setLoading(true);
         try {
-            await registerValidationSchema.validate({ fullName, email, password });
+            await registerValidationSchema.validate({ fullName, email, password, role });
 
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await updateProfile(userCredential.user, { displayName: fullName });
+
+            await updateProfile(userCredential.user, {
+                displayName: fullName,
+            });
+
+            await setDoc(doc(db, 'users', userCredential.user.uid), {
+                fullName,
+                email,
+                role,
+                createdAt: new Date(),
+            });
+
             setRecentlyRegistered(true);
         } catch (error: any) {
             let errorMessage = 'Ocurrió un error al crear la cuenta';
@@ -64,15 +78,11 @@ const RegisterScreen = () => {
             style={styles.container}
         >
             <ScrollView contentContainerStyle={styles.scroll}>
-                <Image
-                    source={Icons.flowerman}
-                    style={styles.icon}
-                    resizeMode="contain"
-                />
+                <Image source={Icons.flowerman} style={styles.icon} resizeMode="contain" />
                 <Text style={styles.title}>¡Registrate en GreenTime!</Text>
 
                 <Formik
-                    initialValues={{ fullName: '', email: '', password: '' }}
+                    initialValues={{ fullName: '', email: '', password: '', role: '' }}
                     validationSchema={registerValidationSchema}
                     onSubmit={handleRegister}
                 >
@@ -98,10 +108,16 @@ const RegisterScreen = () => {
                                 rightIconToggle="eye"
                             />
 
-                            <CustomButton
-                                title="Crear cuenta"
-                                onPress={handleSubmit}
+                            <CustomSelect
+                                name="role"
+                                icon="book"
+                                options={[
+                                    { label: 'Usuario', value: 'user' },
+                                    { label: 'Jardinero', value: 'gardener' },
+                                ]}
                             />
+
+                            <CustomButton title="Crear cuenta" onPress={handleSubmit} loading={loading} />
                         </View>
                     )}
                 </Formik>
@@ -119,7 +135,6 @@ const RegisterScreen = () => {
             </ScrollView>
         </KeyboardAvoidingView>
     );
-
 };
 
 export default RegisterScreen;
