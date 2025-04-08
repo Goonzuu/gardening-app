@@ -14,6 +14,12 @@ import CustomSelect from '../../components/form/CustomSelect';
 import Colors from '../../theme/colors';
 import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { addDoc, collection, serverTimestamp} from 'firebase/firestore';
+import { db } from '../../services/firebaseConfig';
+import { useAuth } from '../../context/AuthContext';
+import AppLoader from '../../components/common/AppLoader';
 
 const mockGardeners = [
   { label: 'Juan Pérez', value: 'juan' },
@@ -22,6 +28,43 @@ const mockGardeners = [
 
 const RequestServiceScreen = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  const handleServiceRequest = async (values: {
+    date: string;
+    hour: string;
+    gardener: string;
+  }) => {
+    const { date, hour, gardener } = values;
+
+    if (!date || !hour || !gardener) {
+      Alert.alert('Faltan datos', 'Completá todos los campos para continuar');
+      return;
+    }
+    setLoading(true);
+    try {
+      await addDoc(collection(db, 'serviceRequests'), {
+        userId: user?.uid,
+        date,
+        hour,
+        gardener,
+        status: 'pending',
+        reason: '',
+        createdAt: serverTimestamp(),
+      });
+
+      showToast('Solicitud enviada con éxito ✅');
+      setTimeout(() => {
+        navigation.goBack();
+      }, 300); 
+    } catch (error) {
+      console.error('Error al enviar solicitud:', error);
+      showToast('Error al enviar solicitud 😓', 'error');
+    } finally { setLoading(false); }
+  };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -29,16 +72,7 @@ const RequestServiceScreen = () => {
 
       <Formik
         initialValues={{ date: '', hour: '', gardener: '' }}
-        onSubmit={(values) => {
-          const { date, hour, gardener } = values;
-
-          if (!date || !hour || !gardener) {
-            Alert.alert('Faltan datos', 'Completá todos los campos para continuar');
-            return;
-          }
-
-          showToast('Solicitud enviada con éxito ✅');
-        }}
+        onSubmit={handleServiceRequest}
       >
         {({ handleSubmit, setFieldValue, values }) => {
           const isDateSelected = Boolean(values.date);
@@ -87,7 +121,6 @@ const RequestServiceScreen = () => {
                 />
               </View>
 
-              {/* Jardinero */}
               <View style={{ opacity: isHourSelected ? 1 : 0.4 }}>
                 <CustomSelect
                   name="gardener"
@@ -106,6 +139,7 @@ const RequestServiceScreen = () => {
           );
         }}
       </Formik>
+      <AppLoader visible={loading} />
     </SafeAreaView>
   );
 };
