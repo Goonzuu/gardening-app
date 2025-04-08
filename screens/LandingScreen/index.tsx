@@ -11,7 +11,7 @@ const LandingScreen = () => {
     return (
         <View style={styles.container}>
             <Image
-                source={Icons.plant}
+                source={Icons.gardening}
                 style={styles.icon}
                 resizeMode="contain"
             />

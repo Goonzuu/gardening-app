@@ -22,9 +22,10 @@ interface Props {
     options: Option[];
     placeholder?: string;
     icon?: keyof typeof Feather.glyphMap;
+    disabled?: boolean;
 }
 
-const CustomSelect: React.FC<Props> = ({ name, label, options, placeholder = 'Seleccionar rol', icon }) => {
+const CustomSelect: React.FC<Props> = ({ name, label, options, placeholder = '', icon, disabled }) => {
     const [field, meta, helpers] = useField(name);
     const [visible, setVisible] = useState(false);
 
@@ -41,8 +42,13 @@ const CustomSelect: React.FC<Props> = ({ name, label, options, placeholder = 'Se
             {label && <Text style={styles.label}>{label}</Text>}
 
             <TouchableOpacity
-                style={[styles.select, hasError && styles.errorBorder]}
-                onPress={() => setVisible(true)}
+                style={[
+                    styles.select,
+                    hasError && styles.errorBorder,
+                    disabled && styles.disabledSelect,
+                ]}
+                onPress={() => !disabled && setVisible(true)}
+                activeOpacity={disabled ? 1 : 0.7}
             >
                 <View style={styles.iconWrapper}>
                     {icon && <Feather name={icon} size={18} color={Colors.mutedText} style={styles.icon} />}
@@ -102,10 +108,10 @@ const styles = StyleSheet.create({
     iconWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
-      },
-      icon: {
+    },
+    icon: {
         marginRight: 8,
-      },
+    },
     text: {
         fontSize: 16,
         color: Colors.text,
@@ -141,6 +147,10 @@ const styles = StyleSheet.create({
     optionText: {
         fontSize: 16,
         color: Colors.text,
+    },
+    disabledSelect: {
+        backgroundColor: '#EDF2F7',
+        borderColor: '#CBD5E0',
     },
 });
 

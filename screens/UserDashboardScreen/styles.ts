@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 302,
+    marginTop: 40,
     paddingHorizontal: 4,
   },
   logoutText: {
