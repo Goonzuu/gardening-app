@@ -22,8 +22,8 @@ import { useAuth } from '../../context/AuthContext';
 import AppLoader from '../../components/common/AppLoader';
 
 const mockGardeners = [
-  { label: 'Juan Pérez', value: 'juan' },
-  { label: 'Ana Flores', value: 'ana' },
+  { label: 'Gustavo', value: 'muzza' },
+  { label: 'Gonzalo', value: 'lalo' },
 ];
 
 const RequestServiceScreen = () => {
